@@ -1,0 +1,27 @@
+---
+- name: stop mongodb if it needs a bootstrap
+  service: name=mongod state=stopped
+  tags: mongodb
+
+- include: mongodb-conf.yml
+  mongodb_conf: "{{ mongodb_bootstrap_conf }}"
+
+- name: start mongodb for bootstrap (without auth)
+  service: name=mongod state=started
+  tags: mongodb
+
+- name: bootstrap users exist with the right password
+  mongodb_user: database={{ item.database }}
+                user={{ item.name }} password={{ item.password }}
+                roles={{ item.roles }}
+                state=present
+  with_items: mongodb_bootstrap_users
+  tags: mongodb
+
+- name: stop mongodb for bootstrap (without auth)
+  service: name=mongod state=stopped
+  tags: mongodb
+
+- name: create the state file for completed bootstrap
+  copy: content='' dest={{ mongodb_bootstrap_state_file }}
+  tags: mongodb

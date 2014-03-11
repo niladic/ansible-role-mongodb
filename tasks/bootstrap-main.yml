@@ -1,0 +1,17 @@
+---
+# A bootstrap strategy:
+# - run mongodb without auth
+# - insert necessary users
+# - restart mongodb with auth
+# - use a state file: if created then boostrap has already been done
+# Bootstrap is done if mongodb_force_bootstrap is true or the state file is not present
+
+- name: check if mongodb needs a bootstrap
+  command: test -e {{ mongodb_bootstrap_state_file }}
+  register: result_mongodb_bootstrap
+  changed_when: "result_mongodb_bootstrap.rc != 0"
+  ignore_errors: True
+  tags: mongodb
+
+- include: bootstrap-subtasks.yml
+  when: mongodb_force_bootstrap or (mongodb_use_bootstrap and result_mongodb_bootstrap.rc != 0)

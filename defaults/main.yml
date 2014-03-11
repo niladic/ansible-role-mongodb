@@ -1,0 +1,29 @@
+mongodb_conf:
+  auth: true
+  setParameter: supportCompatibilityFormPrivilegeDocuments=0
+
+# Not necessary, here just for DRY
+mongodb_admin_user:
+  name: root
+  password: toor
+  database: admin
+  roles: 'readWriteAnyDatabase,userAdminAnyDatabase,dbAdminAnyDatabase,clusterAdmin'
+
+mongodb_users:
+  - name: some_user
+    password: some_user_password
+    database: admin
+    roles: readWriteAnyDatabase
+    login_user: "{{ mongodb_admin_user }}"
+
+# Will use the bootstrap strategy when set to true
+mongodb_use_bootstrap: false
+mongodb_force_bootstrap: false
+mongodb_bootstrap_conf:
+  auth: false
+  setParameter: supportCompatibilityFormPrivilegeDocuments=0
+
+mongodb_bootstrap_state_file: /root/ansible/ansible.state.mongodb.bootstrap
+
+mongodb_bootstrap_users:
+  - "{{ mongodb_admin_user }}"

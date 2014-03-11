@@ -1,0 +1,23 @@
+{% set config = mongodb_conf %}
+{# see http://docs.mongodb.org/manual/reference/configuration-options/ #}
+{% set valid_settings = ['verbose', 'v', 'vv', 'vvv', 'vvvv', 'vvvvv', 'port', 'bind_ip', 'maxConns',
+                         'objcheck', 'noobjcheck', 'logpath', 'logappend', 'syslog', 'pidfilepath',
+                         'keyFile', 'nounixsocket', 'unixSocketPrefix', 'fork', 'auth', 'saslServiceName',
+                         'cpu', 'dbpath', 'diaglog', 'directoryperdb', 'journal', 'journalCommitInterval',
+                         'ipv6', 'jsonp', 'noauth', 'nohttpinterface', 'nojournal', 'noprealloc',
+                         'noscripting', 'notablescan', 'nssize', 'profile', 'quota', 'quotaFiles',
+                         'rest', 'repair', 'repairpath', 'slowms', 'smallfiles', 'syncdelay', 'sysinfo',
+                         'upgrade', 'traceExceptions', 'quiet', 'setParameter',
+                         'replSet', 'oplogSize', 'fastsync', 'replIndexPrefetch', 'master', 'slave',
+                         'source', 'only', 'slavedelay', 'autoresync', 'configsvr', 'shardsvr', 'configdb',
+                         'test', 'chunkSize', 'localThreshold', 'noAutoSplit', 'moveParanoia',
+                         'sslOnNormalPorts', 'sslPEMKeyFile', 'sslPEMKeyPassword', 'sslCAFile',
+                         'sslCRLFile', 'sslWeakCertificateValidation', 'sslFIPSMode'] %}
+# {{ ansible_managed }}
+##### MongoDB Configuration File #####
+{# Iterate on this to avoid unordered dict #}
+{% for setting in valid_settings %}
+{% if setting in config %}
+{{ setting }} = {{ config[setting] }}
+{% endif %}
+{% endfor %}

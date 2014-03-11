@@ -1,0 +1,18 @@
+---
+- include: bootstrap-main.yml
+  when: mongodb_force_bootstrap or mongodb_use_bootstrap
+
+- include: mongodb-conf.yml
+
+- name: mongodb is running
+  service: name=mongod state=started
+  tags: mongodb
+
+- name: users are in mongodb
+  mongodb_user: database={{ item.database }}
+                user={{ item.name }} password={{ item.password }}
+                login_user={{ item.login_user.name }} login_password={{ item.login_user.password }}
+                roles={{ item.roles }}
+                state=present
+  with_items: mongodb_users
+  tags: mongodb

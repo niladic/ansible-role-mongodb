@@ -1,0 +1,6 @@
+---
+- name: mongodb.conf
+  template: src=mongodb.conf.j2 dest=/usr/local/etc/mongodb.conf
+            owner=root group=wheel mode=444
+  notify: restart mongodb
+  tags: mongodb
